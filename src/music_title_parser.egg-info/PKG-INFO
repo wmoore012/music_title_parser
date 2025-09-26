@@ -1,0 +1,37 @@
+Metadata-Version: 2.4
+Name: music-title-parser
+Version: 0.1.0
+Summary: Production-grade music title parsing with policy-based validation and garbage prevention
+Author-email: Perday Catalog Team <team@perday.com>
+Maintainer-email: Perday Catalog Team <team@perday.com>
+License: MIT
+Project-URL: Homepage, https://github.com/perday/music-title-parser
+Project-URL: Repository, https://github.com/perday/music-title-parser
+Project-URL: Issues, https://github.com/perday/music-title-parser/issues
+Project-URL: Documentation, https://github.com/perday/music-title-parser#readme
+Project-URL: Changelog, https://github.com/perday/music-title-parser/blob/main/CHANGELOG.md
+Keywords: music,parsing,youtube,metadata,audio,policy
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Multimedia :: Sound/Audio
+Classifier: Topic :: Text Processing :: Linguistic
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Typing :: Typed
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: pydantic<3.0,>=2.0
+Requires-Dist: pyyaml>=6.0
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0; extra == "dev"
+Requires-Dist: pytest-cov>=4.0; extra == "dev"
+Requires-Dist: mypy>=1.0; extra == "dev"
+Requires-Dist: ruff>=0.1.0; extra == "dev"
+Requires-Dist: pre-commit>=3.0; extra == "dev"
+Requires-Dist: pytest-benchmark>=4.0; extra == "dev"
+Dynamic: license-file

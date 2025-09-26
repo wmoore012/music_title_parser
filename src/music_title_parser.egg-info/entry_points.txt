@@ -1,0 +1,3 @@
+[console_scripts]
+music-title-parser = music_title_parser.cli:main
+validate-parser-policy = music_title_parser.cli:validate_policy

@@ -1,0 +1,176 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2024 MusicScope
+
+# Perday Catalog — Parser & ETL Policy
+# Generated: 2025-09-23
+policy_name: "Perday Catalog — Parser & ETL Policy"
+policy_version: "2025-09-23"
+updated_at: "2025-09-23"
+one_line_policy: "Precision first. Conservative parser writes canonical tables; aggressive parser runs in shadow. Channel → artist only when YouTube Official Artist Channel (OAC). Always land raw (Bronze), normalize in Silver, publish Gold; re-parse from Bronze as rules improve."
+profiles:
+  strict:
+    description: "Highest precision; only Stage-A rules; never use channel as artist unless OAC; limited separators."
+    accept_min: 0.75
+    gray_min: 0.55
+    reject_below: 0.55
+    oac_boost: 0.1
+    use_channel_for_artist: false
+    allow_stage_b: false
+  balanced:
+    description: "Production default. Stage-A + selected Stage-B recovery with safeguards."
+    accept_min: 0.7
+    gray_min: 0.4
+    reject_below: 0.4
+    oac_boost: 0.15
+    use_channel_for_artist: false
+    allow_stage_b: true
+  aggressive:
+    description: "Shadow-only candidate generation. Broad separators and fuzzier rules; never writes Gold directly."
+    accept_min: 0.6
+    gray_min: 0.3
+    reject_below: 0.3
+    oac_boost: 0.15
+    use_channel_for_artist: false
+    allow_stage_b: true
+    shadow_only: true
+parsing:
+  stage_a_rules:
+    split_artist_title: true
+    split_patterns:
+      - " - "
+      - " – "
+    features_patterns:
+      - "feat."
+      - "featuring"
+      - "ft."
+    versions_parentheses: true
+    version_keywords:
+      - "Remix"
+      - "Live"
+      - "Edit"
+      - "Acoustic"
+      - "Radio Edit"
+    title_cleaning:
+      collapse_whitespace: true
+      strip_quotes: true
+      normalize_diacritics: true
+  stage_b_rules:
+    enabled: true
+    loose_separators:
+      - " & "
+      - " x "
+      - " / "
+      - ", "
+    dedupe_separators: true
+    heuristics:
+      multiple_artists_max: 5
+      min_token_len: 2
+  trusted_signals:
+    youtube_oac_required_for_channel_artist: true
+    oac_confidence_boost: 0.15
+  exceptions_config:
+    allowlist_path: allowlist.json
+    denylist_path: denylist.json
+    ttl_days: 90
+    required_fields:
+      - "pattern_or_mapping"
+      - "owner"
+      - "created_at"
+      - "expires_at"
+  decision_thresholds:
+    accept_min: 0.7
+    gray_min: 0.4
+    reject_below: 0.4
+storage:
+  layers:
+    - "bronze"
+    - "silver"
+    - "gold"
+  bronze_table: bronze_youtube_playlist_items
+  silver_table: silver_parsed_titles
+  gold_tables:
+    - "gold_tracks"
+    - "gold_track_artists"
+  bronze_keys:
+    - "video_id"
+    - "playlist_item_id"
+  bronze_fields:
+    - "playlist_id"
+    - "channel_id"
+    - "channel_title"
+    - "title_raw"
+    - "published_at"
+    - "first_seen_at"
+    - "last_seen_at"
+  silver_fields:
+    - "parser_version"
+    - "artist_primary"
+    - "features_json"
+    - "title_clean"
+    - "version_tag"
+    - "confidence"
+    - "decision"
+    - "reason"
+  gold_constraints:
+    no_features_in_title: true
+    versions_in_parentheses_only: true
+reparse_policy:
+  parser_version_semver: true
+  bump_on:
+    - "new_rule"
+    - "threshold_change"
+    - "allowlist_change"
+    - "denylist_change"
+    - "bug_fix"
+  reparse_trigger: on_version_change
+  idempotent_upsert_keys:
+    - "video_id"
+    - "parser_version"
+validation:
+  bronze:
+    unique_keys:
+      - "video_id"
+    not_null:
+      - "title_raw"
+    completeness_expectation: all playlist items landed
+  silver:
+    in_range:
+      confidence:
+        - 0.0
+        - 1.0
+    ref_integrity:
+      video_id_in_bronze: true
+    enum:
+      decision:
+        - "accept"
+        - "graylist"
+        - "reject"
+  gold:
+    title_style_rules:
+      no_feat_in_title: true
+      versions_parenthesized: true
+metrics_targets:
+  p_at_1_primary_artist_min: 0.98
+  recall_any_artist_min: 0.85
+  garbage_rate_max: 0.001
+logging:
+  format: jsonl
+  graylist_output_path: logs/graylist.csv
+  fields:
+    - "video_id"
+    - "channel_title"
+    - "title_raw"
+    - "parsed_artist"
+    - "confidence"
+    - "decision"
+    - "reason"
+security_privacy:
+  do_not_log:
+    - "api_keys"
+    - "cookies"
+  redact_in_logs:
+    - "database_url"
+  pii_policy: no PII in allow/deny lists
+notes:
+  non_removal_policy: "Videos in playlist are never removed; Bronze retains all items for re-parse as parser improves."
+  can_migrate_legacy: Merge/delete known garbage artists and add denylist entries to prevent reappearance.

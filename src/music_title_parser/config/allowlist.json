@@ -1,0 +1,31 @@
+{
+  "version": "1.0",
+  "updated_at": "2025-09-23",
+  "description": "Allowlist for trusted channel-to-artist mappings (primarily YouTube Official Artist Channels)",
+  "entries": [
+    {
+      "pattern_or_mapping": {
+        "channel_name": "Taylor Swift - Topic",
+        "artist_name": "Taylor Swift"
+      },
+      "type": "youtube_oac",
+      "confidence_boost": 0.15,
+      "owner": "system",
+      "created_at": "2025-09-23",
+      "expires_at": "2025-12-22",
+      "notes": "YouTube Official Artist Channel"
+    },
+    {
+      "pattern_or_mapping": {
+        "channel_name": "Drake - Topic", 
+        "artist_name": "Drake"
+      },
+      "type": "youtube_oac",
+      "confidence_boost": 0.15,
+      "owner": "system",
+      "created_at": "2025-09-23",
+      "expires_at": "2025-12-22",
+      "notes": "YouTube Official Artist Channel"
+    }
+  ]
+}
