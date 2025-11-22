@@ -93,9 +93,7 @@ def _benchmark_command() -> None:
 
         print("🚀 Running benchmark...")
         result = run_basic_benchmark()
-        print(
-            f"✅ Processed {result.rows_processed} titles in {result.time_seconds:.3f}s"
-        )
+        print(f"✅ Processed {result.rows_processed} titles in {result.time_seconds:.3f}s")
         print(f"📊 Rate: {result.rows_per_second:,} titles / second")
         print(f"💾 Memory: {result.memory_mb:.1f} MB")
     except ImportError:

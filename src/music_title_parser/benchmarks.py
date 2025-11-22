@@ -87,9 +87,7 @@ def run_comprehensive_benchmark() -> list[BenchmarkResult]:
     return results
 
 
-def _benchmark_profile(
-    profile: PolicyProfile, num_titles: int = 100
-) -> BenchmarkResult:
+def _benchmark_profile(profile: PolicyProfile, num_titles: int = 100) -> BenchmarkResult:
     """Benchmark a specific policy profile."""
     records = _load_benchmark_records(num_titles)
 

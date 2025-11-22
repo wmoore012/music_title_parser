@@ -168,12 +168,8 @@ def validate_policy_files():
         print(f"  Version: {yaml_config['policy_version']}")
         print(f"  Profiles: {', '.join(yaml_config['profiles'].keys())}")
         print(f"  Storage: {' → '.join(yaml_config['storage']['layers'])}")
-        print(
-            f"  P@1 Target: {yaml_config['metrics_targets']['p_at_1_primary_artist_min']*100}%"
-        )
-        print(
-            f"  Garbage Target: <{yaml_config['metrics_targets']['garbage_rate_max']*100}%"
-        )
+        print(f"  P@1 Target: {yaml_config['metrics_targets']['p_at_1_primary_artist_min']*100}%")
+        print(f"  Garbage Target: <{yaml_config['metrics_targets']['garbage_rate_max']*100}%")
 
         return True
 

@@ -30,9 +30,7 @@ try:
 except Exception:  # Graceful degradation when policy engine is unavailable
 
     def parse_with_policy(*args, **kwargs):  # type: ignore[no-redef]
-        raise ImportError(
-            "music_title_parser.policy_engine is not available in this build"
-        )
+        raise ImportError("music_title_parser.policy_engine is not available in this build")
 
 
 __version__ = "0.1.0"

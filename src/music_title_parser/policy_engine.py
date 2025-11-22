@@ -50,7 +50,9 @@ class PolicyEngine:
     }
 
     def __init__(self, config_dir: str | Path | None = None) -> None:
-        self.config_dir = Path(config_dir) if config_dir else Path(__file__).resolve().parent / "config"
+        self.config_dir = (
+            Path(config_dir) if config_dir else Path(__file__).resolve().parent / "config"
+        )
         if not self.config_dir.exists():
             raise ConfigLoadError(str(self.config_dir), "config directory not found")
 
@@ -168,7 +170,11 @@ class PolicyEngine:
 
     def _load_allowlist(
         self, path: Path
-    ) -> tuple[list[AllowlistEntry], dict[str, AllowlistEntry], list[tuple[re.Pattern[str], AllowlistEntry]]]:
+    ) -> tuple[
+        list[AllowlistEntry],
+        dict[str, AllowlistEntry],
+        list[tuple[re.Pattern[str], AllowlistEntry]],
+    ]:
         data = self._load_json(path)
         entries = [AllowlistEntry(**raw) for raw in data.get("entries", [])]
         exact: dict[str, AllowlistEntry] = {}
@@ -185,7 +191,9 @@ class PolicyEngine:
 
     def _load_denylist(
         self, path: Path
-    ) -> tuple[list[DenylistEntry], dict[str, DenylistEntry], list[tuple[re.Pattern[str], DenylistEntry]]]:
+    ) -> tuple[
+        list[DenylistEntry], dict[str, DenylistEntry], list[tuple[re.Pattern[str], DenylistEntry]]
+    ]:
         data = self._load_json(path)
         entries = [DenylistEntry(**raw) for raw in data.get("entries", [])]
         exact: dict[str, DenylistEntry] = {}
