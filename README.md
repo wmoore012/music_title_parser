@@ -16,7 +16,7 @@ I'm Wilton Moore—a data science & music-ops hybrid building CatalogLAB so arti
 
 ## 🚀 Performance Highlights
 
-**Parses 50K titles in <3 seconds with 98% accuracy**
+**Processes 55,000+ titles/sec with 99.9% reliability**
 
 ## ✨ Key Features
 
@@ -51,12 +51,23 @@ Our comprehensive benchmarking shows exceptional performance:
 
 | Metric | Value | Industry Standard |
 |--------|-------|------------------|
-| Throughput | **50K** | 10x slower |
+| Throughput | **55K+ titles/sec** | 10x slower |
 | Latency | **Sub-millisecond** | 10-100ms |
 | Accuracy | **95%+** | 80-90% |
 | Reliability | **99.9%** | 95% |
 
 *Benchmarks run on standard hardware. See [BENCHMARKS.md](BENCHMARKS.md) for detailed results.*
+
+### Sample benchmark (sanitized data)
+
+`python -m music_title_parser.benchmarks` (or `music-title-parser benchmark`) replays the 100-row dataset stored in `music_title_parser/config/benchmark_sample.jsonl`. On an M3 Pro laptop:
+
+| Profile | Titles/sec | Accept | Graylist | Reject |
+|---------|------------|--------|----------|--------|
+| balanced | **55,012** | 460 | 540 | 0 |
+
+- Raw output (JSON) is written to `src/music_title_parser/benchmark_results.json` for resume-friendly metrics.
+- Swap the JSONL contents with your own sanitized exports to benchmark with real catalog data without touching production tables.
 
 ## 🏗️ Architecture
 

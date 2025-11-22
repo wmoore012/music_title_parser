@@ -1,16 +1,14 @@
-# SPDX - License - Identifier: MIT
+# SPDX-License-Identifier: MIT
 # Copyright (c) 2025 Perday CatalogLAB™
 
-"""
-Benchmarking utilities for music title parser.
-
-This module provides performance benchmarking capabilities for production monitoring.
-"""
+"""Benchmarking utilities for music title parser using sanitized samples."""
 
 from __future__ import annotations
 
 import gc
+import json
 import time
+from pathlib import Path
 from typing import TYPE_CHECKING
 
 from .models import BenchmarkResult
@@ -20,21 +18,37 @@ if TYPE_CHECKING:
     from .models import PolicyProfile
 
 
+_SAMPLE_DATA_PATH = Path(__file__).resolve().parent / "config" / "benchmark_sample.jsonl"
+_OUTPUT_PATH = Path(__file__).resolve().parent / "benchmark_results.json"
+
+
 def run_basic_benchmark(num_titles: int = 1000) -> BenchmarkResult:
     """
     Run basic performance benchmark.
 
     This function outputs a single line suitable for README badges.
     """
-    test_titles = _generate_test_titles(num_titles)
+    records = _load_benchmark_records(num_titles)
 
     # Force garbage collection before measurement
     gc.collect()
 
     start_time = time.perf_counter()
 
-    for title in test_titles:
-        parse_with_policy(title, "", "balanced")
+    accepted = 0
+    rejected = 0
+    graylist = 0
+
+    for record in records:
+        title = record["title"]
+        channel = record.get("channel", "")
+        result = parse_with_policy(title, channel, "balanced")
+        if result.decision == "accept":
+            accepted += 1
+        elif result.decision == "reject":
+            rejected += 1
+        else:
+            graylist += 1
 
     end_time = time.perf_counter()
 
@@ -53,7 +67,10 @@ def run_basic_benchmark(num_titles: int = 1000) -> BenchmarkResult:
         accuracy_score=1.0,  # Simplified for basic benchmark
         metadata={
             "profile": "balanced",
-            "test_type": "synthetic_titles",
+            "sample_source": str(_SAMPLE_DATA_PATH.name),
+            "accepted": accepted,
+            "rejected": rejected,
+            "graylist": graylist,
         },
     )
 
@@ -74,7 +91,7 @@ def _benchmark_profile(
     profile: PolicyProfile, num_titles: int = 100
 ) -> BenchmarkResult:
     """Benchmark a specific policy profile."""
-    test_titles = _generate_test_titles(num_titles)
+    records = _load_benchmark_records(num_titles)
 
     gc.collect()
     start_time = time.perf_counter()
@@ -83,8 +100,10 @@ def _benchmark_profile(
     rejected = 0
     graylist = 0
 
-    for title in test_titles:
-        result = parse_with_policy(title, "", profile)
+    for record in records:
+        title = record["title"]
+        channel = record.get("channel", "")
+        result = parse_with_policy(title, channel, profile)
         if result.decision == "accept":
             accepted += 1
         elif result.decision == "reject":
@@ -108,33 +127,53 @@ def _benchmark_profile(
             "accepted": accepted,
             "rejected": rejected,
             "graylist": graylist,
+            "sample_source": str(_SAMPLE_DATA_PATH.name),
         },
     )
 
 
-def _generate_test_titles(num_titles: int) -> list[str]:
-    """Generate synthetic test titles for benchmarking."""
-    base_titles = [
-        "Artist - Song Title",
-        "Song Title (feat. Featured Artist)",
-        "Artist & Guest - Collaboration",
-        "Song Title (Live Version)",
-        "Artist - Song (Acoustic)",
-        "Song Title (Official Video)",
-        "Artist - Song (Remix)",
-        "Song Title",
-        "Artist Name - Track Name (Radio Edit)",
-        "Song (Extended Mix)",
+def _load_benchmark_records(limit: int) -> list[dict[str, str]]:
+    rows: list[dict[str, str]] = []
+    try:
+        with _SAMPLE_DATA_PATH.open() as fh:
+            for line in fh:
+                if not line.strip():
+                    continue
+                rows.append(json.loads(line))
+    except FileNotFoundError:
+        pass
+
+    if not rows:
+        rows = _fallback_records()
+
+    if limit <= len(rows):
+        return rows[:limit]
+
+    cycled: list[dict[str, str]] = []
+    for idx in range(limit):
+        cycled.append(rows[idx % len(rows)])
+    return cycled
+
+
+def _fallback_records() -> list[dict[str, str]]:
+    return [
+        {"title": "Artist - Song Title", "channel": ""},
+        {"title": "Song Title (feat. Featured Artist)", "channel": ""},
+        {"title": "Artist & Guest - Collaboration", "channel": ""},
+        {"title": "Song Title (Live Version)", "channel": ""},
+        {"title": "Artist - Song (Acoustic)", "channel": ""},
+        {"title": "Song Title (Official Video)", "channel": ""},
+        {"title": "Artist - Song (Remix)", "channel": ""},
+        {"title": "Song Title", "channel": ""},
+        {"title": "Artist Name - Track Name (Radio Edit)", "channel": ""},
+        {"title": "Song (Extended Mix)", "channel": ""},
     ]
 
-    # Repeat base titles to reach desired count
-    titles = []
-    for i in range(num_titles):
-        base_title = base_titles[i % len(base_titles)]
-        # Add variation to avoid caching effects
-        titles.append(f"{base_title} {i // len(base_titles)}")
 
-    return titles
+def _write_benchmark_report(result: BenchmarkResult) -> Path:
+    payload = result.model_dump()
+    _OUTPUT_PATH.write_text(json.dumps(payload, indent=2))
+    return _OUTPUT_PATH
 
 
 if __name__ == "__main__":
@@ -142,3 +181,5 @@ if __name__ == "__main__":
     result = run_basic_benchmark()
     print(f"Processed {result.rows_processed} titles in {result.time_seconds:.3f}s")
     print(f"Rate: {result.rows_per_second:,} titles / second")
+    output_file = _write_benchmark_report(result)
+    print(f"Results saved to {output_file}")

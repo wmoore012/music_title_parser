@@ -1,18 +1,14 @@
-# SPDX - License - Identifier: MIT
+# SPDX-License-Identifier: MIT
 # Copyright (c) 2025 Perday CatalogLAB™
 
-"""
-Command - line interface for music title parser.
-
-This module provides CLI tools for parsing titles and validating policies.
-"""
+"""Command-line interface for music title parser."""
 
 from __future__ import annotations
 
 import sys
-from typing import NoReturn
+from typing import NoReturn, cast
 
-from .models import ParsedTitle
+from .models import ParsedTitle, PolicyProfile
 from .policy_engine import PolicyEngine, parse_with_policy
 
 
@@ -57,7 +53,7 @@ def validate_policy() -> NoReturn:
 def _parse_command() -> None:
     """Handle parse command."""
     if len(sys.argv) < 3:
-        print("Usage: music - title - parser parse <title> [channel] [profile]")
+        print("Usage: music-title-parser parse <title> [channel] [profile]")
         sys.exit(1)
 
     title = sys.argv[2]
@@ -69,7 +65,8 @@ def _parse_command() -> None:
         sys.exit(1)
 
     try:
-        result = parse_with_policy(title, channel, profile)  # type: ignore[arg - type]
+        typed_profile = cast(PolicyProfile, profile)
+        result = parse_with_policy(title, channel, typed_profile)
         _print_result(result)
     except Exception as e:
         print(f"❌ Parsing failed: {e}")
@@ -114,28 +111,16 @@ def _validate_policy_files() -> bool:
     try:
         engine = PolicyEngine()
 
-        # Test that policy loads
-        policy = engine.policy
-        if not policy:
-            return False
+        required_profiles: tuple[PolicyProfile, ...] = ("strict", "balanced", "aggressive")
+        for profile_name in required_profiles:
+            engine.policy.get_profile(profile_name)
 
-        # Test that profiles exist
-        required_profiles = ["strict", "balanced", "aggressive"]
-        for profile in required_profiles:
-            if profile not in policy.get("profiles", {}):
-                print(f"❌ Missing profile: {profile}")
-                return False
+        allowlist_count = len(engine.allowlist)
+        denylist_count = len(engine.denylist)
 
-        # Test allowlist / denylist load
-        allowlist = engine.allowlist
-        denylist = engine.denylist
-
-        if not isinstance(allowlist, dict) or not isinstance(denylist, dict):
-            return False
-
-        print(f"✅ Policy loaded: {len(policy.get('profiles', {}))} profiles")
-        print(f"✅ Allowlist: {len(allowlist.get('entries', []))} entries")
-        print(f"✅ Denylist: {len(denylist.get('entries', []))} entries")
+        print(f"✅ Policy loaded: {len(engine.policy.profiles)} profiles")
+        print(f"✅ Allowlist: {allowlist_count} entries")
+        print(f"✅ Denylist: {denylist_count} entries")
 
         return True
 
@@ -165,10 +150,10 @@ def _show_help() -> None:
 Music Title Parser CLI
 
 Usage:
-  music - title - parser parse <title> [channel] [profile]
-  music - title - parser validate
-  music - title - parser benchmark
-  music - title - parser --help
+  music-title-parser parse <title> [channel] [profile]
+  music-title-parser validate
+  music-title-parser benchmark
+  music-title-parser --help
 
 Commands:
   parse      Parse a music title with optional channel and profile
@@ -177,10 +162,10 @@ Commands:
   --help     Show this help message
 
 Examples:
-  music - title - parser parse "Taylor Swift - Anti - Hero"
-  music - title - parser parse "Anti - Hero" "Taylor Swift - Topic" balanced
-  music - title - parser validate
-  music - title - parser benchmark
+  music-title-parser parse "Taylor Swift - Anti-Hero"
+  music-title-parser parse "Anti-Hero" "Taylor Swift - Topic" balanced
+  music-title-parser validate
+  music-title-parser benchmark
 
 Profiles:
   strict     Highest precision, conservative parsing
@@ -188,7 +173,7 @@ Profiles:
   aggressive Shadow mode for candidate generation
 
 Install with pipx:
-  pipx install music - title - parser
+  pipx install music-title-parser
 """
     )
 

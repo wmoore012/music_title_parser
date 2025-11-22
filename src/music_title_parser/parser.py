@@ -1,4 +1,4 @@
-# SPDX - License - Identifier: MIT
+# SPDX-License-Identifier: MIT
 # Copyright (c) 2025 Perday CatalogLAB™
 
 """
@@ -13,7 +13,11 @@ from __future__ import annotations
 import re
 from typing import Any
 
-__all__ = ["parse_title", "split_artist_title", "parse_with_policy"]
+__all__ = [
+    "parse_title",
+    "split_artist_title",
+    "normalize_channel_title_for_artist",
+]
 
 # Tokens that are common YouTube "presentation" labels, not song identity
 # Kept behind a toggle so default behavior is unchanged.
@@ -115,7 +119,11 @@ _VERSION_KEYWORDS = (
 
 def _split_guests(guests: str) -> list[str]:
     # commas, ampersand, 'and', 'x', slash, multiplication sign, literal plus
-    parts = re.split(r"\s*(?:,|&|and|x|/|×|\+)\s*", guests, flags=re.IGNORECASE)
+    parts = re.split(
+        r"\s*(?:,|&|and|/|×|\+|(?<=\w)\s*[xX]\s*(?=\w))\s*",
+        guests,
+        flags=re.IGNORECASE,
+    )
     out: list[str] = []
     seen = set()
     for p in parts:
@@ -359,7 +367,11 @@ def split_artist_title(full: str) -> tuple[list[str], str]:
 
     # Split left into primary artists; include '/' but be careful with names like 'AC / DC'
     # Use word boundaries to avoid splitting names that contain these characters
-    raw_artists = re.split(r"\s*(?:,|&|and|x|×|\+|/)\s*", left, flags=re.IGNORECASE)
+    raw_artists = re.split(
+        r"\s*(?:,|&|and|/|×|\+|(?<=\w)\s*[xX]\s*(?=\w))\s*",
+        left,
+        flags=re.IGNORECASE,
+    )
 
     artists: list[str] = []
     seen = set()
@@ -530,16 +542,5 @@ def normalize_channel_title_for_artist(channel_title: str) -> str:
     if not isinstance(channel_title, str):
         return ""
     out = channel_title.strip()
-    out = re.sub(r"\s*-\s * Topic$", "", out, flags=re.IGNORECASE).strip()
+    out = re.sub(r"\s*-\s*Topic$", "", out, flags=re.IGNORECASE).strip()
     return out
-
-
-# Import policy - aware parsing
-try:
-    from .models import ParsedTitle
-    from .policy_engine import parse_with_policy
-
-    __all__.extend(["parse_with_policy", "ParsedTitle"])
-except ImportError:
-    # Policy engine not available - graceful degradation
-    pass

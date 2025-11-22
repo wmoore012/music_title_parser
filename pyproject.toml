@@ -55,6 +55,11 @@ Documentation = "https://github.com/wmoore012/music_title_parser/blob/main/READM
 where = ["src"]
 
 [tool.setuptools.package-data]
+"music_title_parser" = [
+    "config/*.json",
+    "config/*.yaml",
+    "config/*.jsonl",
+]
 "*" = ["py.typed"]
 
 [tool.black]

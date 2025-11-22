@@ -1,0 +1,15 @@
+{
+  "test_name": "basic_benchmark",
+  "rows_processed": 1000,
+  "time_seconds": 0.018177791964262724,
+  "memory_mb": 0.0,
+  "rows_per_second": 55012,
+  "accuracy_score": 1.0,
+  "metadata": {
+    "profile": "balanced",
+    "sample_source": "benchmark_sample.jsonl",
+    "accepted": 460,
+    "rejected": 0,
+    "graylist": 540
+  }
+}
