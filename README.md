@@ -40,10 +40,18 @@ pip install -e .
 ## 🔥 Quick Start
 
 ```python
-from music_title_parser import *
+from music_title_parser import parse_title, parse_with_policy
 
-# See examples/ directory for detailed usage
+parsed = parse_title("Song Title (feat. Guest Artist) (Live)")
+print(parsed)
+# {'artist': '', 'title': 'Song Title', 'features': ['Guest Artist'], 'version': 'Live'}
+
+decision = parse_with_policy("Taylor Swift - Anti-Hero", "Taylor Swift - Topic", "balanced")
+print(decision)
+# ParsedTitle(artist='Taylor Swift', title='Anti-Hero', decision='accept', confidence=0.95, ...)
 ```
+
+> See `examples/` for richer CLI + policy workflows.
 
 ## 📊 Performance Benchmarks
 
