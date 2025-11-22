@@ -1,5 +1,5 @@
-# SPDX-License-Identifier: MIT
-# Copyright (c) 2024 MusicScope
+# SPDX - License - Identifier: MIT
+# Copyright (c) 2025 Perday CatalogLAB™
 
 """
 Examples of configurable version mapping for music title parser.
@@ -36,7 +36,12 @@ def example_custom_equivalencies():
     # Define custom equivalencies
     custom_rules = {
         "equivalencies": {
-            "lyric video": ["visualizer", "lyric visualizer", "lyrics video", "visiualizer"],
+            "lyric video": [
+                "visualizer",
+                "lyric visualizer",
+                "lyrics video",
+                "visiualizer",
+            ],
             "official video": ["music video", "official music video", "official mv"],
             "live": ["live performance", "live version", "live recording"],
             "acoustic": ["acoustic version", "acoustic performance", "unplugged"],
@@ -106,15 +111,15 @@ def example_combination_rules():
     custom_rules = {
         "combinations": {
             # Musical + Presentation = Musical
-            "slowed+visualizer": "slowed",
-            "slowed+lyric video": "slowed",
-            "acoustic+official video": "acoustic",
-            "remix+visualizer": "remix",
-            "live+lyric video": "live",
+            "slowed + visualizer": "slowed",
+            "slowed + lyric video": "slowed",
+            "acoustic + official video": "acoustic",
+            "remix + visualizer": "remix",
+            "live + lyric video": "live",
             # Special cases
-            "slowed+reverb": "slowed and reverbed",
-            "clean+radio edit": "radio edit",
-            "explicit+uncensored": "explicit",
+            "slowed + reverb": "slowed and reverbed",
+            "clean + radio edit": "radio edit",
+            "explicit + uncensored": "explicit",
         },
         "equivalencies": {
             "lyric video": ["visualizer", "lyric visualizer"],
@@ -141,9 +146,18 @@ def example_real_world_youtube():
     # Rules optimized for YouTube content
     youtube_rules = {
         "equivalencies": {
-            "lyric video": ["visualizer", "lyric visualizer", "lyrics video", "visiualizer"],
+            "lyric video": [
+                "visualizer",
+                "lyric visualizer",
+                "lyrics video",
+                "visiualizer",
+            ],
             "official video": ["music video", "official music video", "official audio"],
-            "slowed and reverbed": ["slowed + reverb", "slowed & reverb", "slowed reverb"],
+            "slowed and reverbed": [
+                "slowed + reverb",
+                "slowed & reverb",
+                "slowed reverb",
+            ],
         },
         "priorities": {
             "slowed and reverbed": 1,
@@ -159,11 +173,11 @@ def example_real_world_youtube():
             "official video": 11,
         },
         "combinations": {
-            "slowed+visualizer": "slowed",
-            "slowed+lyric video": "slowed",
-            "acoustic+official video": "acoustic",
-            "remix+visualizer": "remix",
-            "live+lyric video": "live",
+            "slowed + visualizer": "slowed",
+            "slowed + lyric video": "slowed",
+            "acoustic + official video": "acoustic",
+            "remix + visualizer": "remix",
+            "live + lyric video": "live",
         },
     }
 
@@ -202,7 +216,7 @@ def example_user_customization_guide():
     print("   'slowed': 1, 'remix': 3, 'lyric video': 10")
     print()
     print("3. 'combinations' - Handle multiple versions:")
-    print("   'slowed+visualizer': 'slowed'")
+    print("   'slowed + visualizer': 'slowed'")
     print()
     print("Example usage:")
     print("   rules = {'equivalencies': {...}, 'priorities': {...}}")

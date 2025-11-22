@@ -1,8 +1,8 @@
-# SPDX-License-Identifier: MIT
-# Copyright (c) 2024 MusicScope
+# SPDX - License - Identifier: MIT
+# Copyright (c) 2025 Perday CatalogLAB™
 
 """
-Command-line interface for music title parser.
+Command - line interface for music title parser.
 
 This module provides CLI tools for parsing titles and validating policies.
 """
@@ -57,7 +57,7 @@ def validate_policy() -> NoReturn:
 def _parse_command() -> None:
     """Handle parse command."""
     if len(sys.argv) < 3:
-        print("Usage: music-title-parser parse <title> [channel] [profile]")
+        print("Usage: music - title - parser parse <title> [channel] [profile]")
         sys.exit(1)
 
     title = sys.argv[2]
@@ -69,7 +69,7 @@ def _parse_command() -> None:
         sys.exit(1)
 
     try:
-        result = parse_with_policy(title, channel, profile)  # type: ignore[arg-type]
+        result = parse_with_policy(title, channel, profile)  # type: ignore[arg - type]
         _print_result(result)
     except Exception as e:
         print(f"❌ Parsing failed: {e}")
@@ -96,8 +96,10 @@ def _benchmark_command() -> None:
 
         print("🚀 Running benchmark...")
         result = run_basic_benchmark()
-        print(f"✅ Processed {result.rows_processed} titles in {result.time_seconds:.3f}s")
-        print(f"📊 Rate: {result.rows_per_second:,} titles/second")
+        print(
+            f"✅ Processed {result.rows_processed} titles in {result.time_seconds:.3f}s"
+        )
+        print(f"📊 Rate: {result.rows_per_second:,} titles / second")
         print(f"💾 Memory: {result.memory_mb:.1f} MB")
     except ImportError:
         print("❌ Benchmark module not available")
@@ -124,7 +126,7 @@ def _validate_policy_files() -> bool:
                 print(f"❌ Missing profile: {profile}")
                 return False
 
-        # Test allowlist/denylist load
+        # Test allowlist / denylist load
         allowlist = engine.allowlist
         denylist = engine.denylist
 
@@ -163,10 +165,10 @@ def _show_help() -> None:
 Music Title Parser CLI
 
 Usage:
-  music-title-parser parse <title> [channel] [profile]
-  music-title-parser validate
-  music-title-parser benchmark
-  music-title-parser --help
+  music - title - parser parse <title> [channel] [profile]
+  music - title - parser validate
+  music - title - parser benchmark
+  music - title - parser --help
 
 Commands:
   parse      Parse a music title with optional channel and profile
@@ -175,18 +177,18 @@ Commands:
   --help     Show this help message
 
 Examples:
-  music-title-parser parse "Taylor Swift - Anti-Hero"
-  music-title-parser parse "Anti-Hero" "Taylor Swift - Topic" balanced
-  music-title-parser validate
-  music-title-parser benchmark
+  music - title - parser parse "Taylor Swift - Anti - Hero"
+  music - title - parser parse "Anti - Hero" "Taylor Swift - Topic" balanced
+  music - title - parser validate
+  music - title - parser benchmark
 
 Profiles:
   strict     Highest precision, conservative parsing
-  balanced   Production default with good precision/recall balance
+  balanced   Production default with good precision / recall balance
   aggressive Shadow mode for candidate generation
 
 Install with pipx:
-  pipx install music-title-parser
+  pipx install music - title - parser
 """
     )
 

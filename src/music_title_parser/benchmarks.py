@@ -1,5 +1,5 @@
-# SPDX-License-Identifier: MIT
-# Copyright (c) 2024 MusicScope
+# SPDX - License - Identifier: MIT
+# Copyright (c) 2025 Perday CatalogLAB™
 
 """
 Benchmarking utilities for music title parser.
@@ -42,7 +42,7 @@ def run_basic_benchmark(num_titles: int = 1000) -> BenchmarkResult:
     rows_per_second = int(num_titles / time_seconds) if time_seconds > 0 else 0
 
     # Output single line for badges
-    print(f"BENCHMARK: {rows_per_second:,} titles/sec, {time_seconds:.3f}s total")
+    print(f"BENCHMARK: {rows_per_second:,} titles / sec, {time_seconds:.3f}s total")
 
     return BenchmarkResult(
         test_name="basic_benchmark",
@@ -70,7 +70,9 @@ def run_comprehensive_benchmark() -> list[BenchmarkResult]:
     return results
 
 
-def _benchmark_profile(profile: PolicyProfile, num_titles: int = 100) -> BenchmarkResult:
+def _benchmark_profile(
+    profile: PolicyProfile, num_titles: int = 100
+) -> BenchmarkResult:
     """Benchmark a specific policy profile."""
     test_titles = _generate_test_titles(num_titles)
 
@@ -136,7 +138,7 @@ def _generate_test_titles(num_titles: int) -> list[str]:
 
 
 if __name__ == "__main__":
-    # CLI usage for CI/CD
+    # CLI usage for CI / CD
     result = run_basic_benchmark()
     print(f"Processed {result.rows_processed} titles in {result.time_seconds:.3f}s")
-    print(f"Rate: {result.rows_per_second:,} titles/second")
+    print(f"Rate: {result.rows_per_second:,} titles / second")

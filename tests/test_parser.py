@@ -1,5 +1,5 @@
-# SPDX-License-Identifier: MIT
-# Copyright (c) 2024 MusicScope
+# SPDX - License - Identifier: MIT
+# Copyright (c) 2025 Perday CatalogLAB™
 
 """
 Tests for music title parser functionality.
@@ -28,17 +28,17 @@ class TestBasicTitleParsing:
 
     def test_empty_title_raises_error(self):
         """Test that empty title raises ValueError."""
-        with pytest.raises(ValueError, match="title must be a non-empty string"):
+        with pytest.raises(ValueError, match="title must be a non - empty string"):
             parse_title("")
 
     def test_none_title_raises_error(self):
         """Test that None title raises ValueError."""
-        with pytest.raises(ValueError, match="title must be a non-empty string"):
+        with pytest.raises(ValueError, match="title must be a non - empty string"):
             parse_title(None)
 
     def test_whitespace_only_title_raises_error(self):
-        """Test that whitespace-only title raises ValueError."""
-        with pytest.raises(ValueError, match="title must be a non-empty string"):
+        """Test that whitespace - only title raises ValueError."""
+        with pytest.raises(ValueError, match="title must be a non - empty string"):
             parse_title("   ")
 
 
@@ -90,7 +90,7 @@ class TestFeatureDetection:
         assert parse_title(title) == expected
 
     def test_title_with_features_and_commas(self):
-        """Test title with comma-separated featured artists."""
+        """Test title with comma - separated featured artists."""
         title = "Song Title (feat. Artist A, Artist B, Artist C)"
         expected = {
             "artist": "",
@@ -203,7 +203,7 @@ class TestComplexTitleParsing:
 
         assert result["title"] == "Song Title"
         assert "Featured Artist" in result["features"]
-        # Should pick up first version-like content
+        # Should pick up first version - like content
         assert result["version"] in ["Live", "Remastered"]
 
     def test_title_with_youtube_noise(self):
@@ -233,7 +233,7 @@ class TestArtistTitleSplitting:
     """Test artist and title splitting functionality."""
 
     def test_split_artist_title_basic(self):
-        """Test basic artist-title splitting."""
+        """Test basic artist - title splitting."""
         full = "Artist Name - Song Title"
         artists, title = split_artist_title(full)
 
@@ -289,7 +289,7 @@ class TestArtistTitleSplitting:
         assert title == "Song Title"
 
     def test_split_artist_title_type_error(self):
-        """Test that non-string input raises TypeError."""
+        """Test that non - string input raises TypeError."""
         with pytest.raises(TypeError, match="full must be a string"):
             split_artist_title(123)
 
@@ -333,7 +333,7 @@ class TestEdgeCases:
 
     def test_title_with_numbers_and_symbols(self):
         """Test title with numbers and symbols."""
-        title = "Song #1 (feat. Artist 2.0) [2024 Remix]"
+        title = "Song #1 (feat. Artist 2.0) [2025 Remix]"
         result = parse_title(title)
 
         assert "Song #1" in result["title"]

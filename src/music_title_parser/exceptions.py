@@ -1,5 +1,5 @@
-# SPDX-License-Identifier: MIT
-# Copyright (c) 2024 MusicScope
+# SPDX - License - Identifier: MIT
+# Copyright (c) 2025 Perday CatalogLAB™
 
 """
 Specific exception types for music title parsing.
@@ -19,7 +19,7 @@ class PolicyError(MusicTitleParserError):
 
 
 class InvalidPatternError(PolicyError):
-    """Raised when a regex pattern in allowlist/denylist is invalid."""
+    """Raised when a regex pattern in allowlist / denylist is invalid."""
 
     def __init__(self, pattern: str, reason: str) -> None:
         self.pattern = pattern

@@ -1,5 +1,5 @@
-# SPDX-License-Identifier: MIT
-# Copyright (c) 2024 MusicScope
+# SPDX - License - Identifier: MIT
+# Copyright (c) 2025 Perday CatalogLAB™
 
 """
 Interactive Version Rule Manager
@@ -66,7 +66,10 @@ class VersionRuleManager:
         )
 
         panel = Panel(
-            Align.center(banner), box=box.DOUBLE, border_style="bright_magenta", padding=(1, 2)
+            Align.center(banner),
+            box=box.DOUBLE,
+            border_style="bright_magenta",
+            padding=(1, 2),
         )
 
         self.console.print()
@@ -113,11 +116,12 @@ class VersionRuleManager:
                     try:
                         artists, title_part = split_artist_title(title)
                         parsed = parse_title(
-                            title_part if artists else title, normalize_youtube_noise=True
+                            title_part if artists else title,
+                            normalize_youtube_noise=True,
                         )
 
-                        # Check if this looks like a multi-version case
-                        # Look for multiple parentheses/brackets that might contain versions
+                        # Check if this looks like a multi - version case
+                        # Look for multiple parentheses / brackets that might contain versions
                         import re
 
                         segments = re.findall(r"[(\[{]([^)\]}]*)[)\]}]", title)
@@ -144,7 +148,8 @@ class VersionRuleManager:
                         examples.append(
                             {
                                 "title": title,
-                                "versions_found": potential_versions or [parsed["version"]],
+                                "versions_found": potential_versions
+                                or [parsed["version"]],
                                 "current_result": parsed["version"],
                                 "count": count,
                                 "is_problematic": is_problematic,
@@ -239,7 +244,9 @@ class VersionRuleManager:
         if good_examples:
             self.console.print(
                 Panel(
-                    "✅ Well-Handled Version Combinations", style="green bold", border_style="green"
+                    "✅ Well - Handled Version Combinations",
+                    style="green bold",
+                    border_style="green",
                 )
             )
 
@@ -264,11 +271,17 @@ class VersionRuleManager:
         """Display current version mapping rules."""
         if not self.rules:
             self.console.print(
-                Panel("No custom rules defined yet.", title="Current Rules", border_style="blue")
+                Panel(
+                    "No custom rules defined yet.",
+                    title="Current Rules",
+                    border_style="blue",
+                )
             )
             return
 
-        rules_table = Table(title="🎛️ Current Version Rules", box=box.ROUNDED, border_style="blue")
+        rules_table = Table(
+            title="🎛️ Current Version Rules", box=box.ROUNDED, border_style="blue"
+        )
 
         rules_table.add_column("Version Combination", style="yellow", width=30)
         rules_table.add_column("→", justify="center", style="white", width=3)
@@ -284,7 +297,11 @@ class VersionRuleManager:
         """Interactive rule creation based on database examples."""
 
         self.console.print(
-            Panel("🎯 Create Version Priority Rule", style="bright_blue bold", border_style="blue")
+            Panel(
+                "🎯 Create Version Priority Rule",
+                style="bright_blue bold",
+                border_style="blue",
+            )
         )
 
         # Show problematic examples for selection
@@ -322,7 +339,8 @@ class VersionRuleManager:
 
         self.console.print(
             Panel(
-                f"Creating rule for: [yellow]{' + '.join(versions)}[/yellow]", border_style="blue"
+                f"Creating rule for: [yellow]{' + '.join(versions)}[/yellow]",
+                border_style="blue",
             )
         )
 
@@ -383,10 +401,14 @@ class VersionRuleManager:
         # Parse the example title with the new rules
         title = example["title"]
         artists, title_part = split_artist_title(title)
-        result = parse_title(title_part if artists else title, version_mapping_table=self.rules)
+        result = parse_title(
+            title_part if artists else title, version_mapping_table=self.rules
+        )
 
         if result["version"].lower() == expected_result.lower():
-            self.console.print(f"✅ Rule works! [green]{result['version']}[/green]", style="green")
+            self.console.print(
+                f"✅ Rule works! [green]{result['version']}[/green]", style="green"
+            )
         else:
             self.console.print(
                 f"⚠️  Unexpected result: [red]{result['version']}[/red] (expected [green]{expected_result}[/green])",
@@ -403,7 +425,9 @@ class VersionRuleManager:
             self.console.print("🔍 Analyzing your database for version combinations...")
             examples = self.analyze_database_examples(database_url)
         else:
-            self.console.print("📊 Using sample data (connect database for real analysis)")
+            self.console.print(
+                "📊 Using sample data (connect database for real analysis)"
+            )
             examples = self.analyze_database_examples("")
 
         while True:
@@ -458,7 +482,9 @@ class VersionRuleManager:
         # Show rules for selection
         rule_list = list(self.rules.items())
         for i, (combo, result) in enumerate(rule_list, 1):
-            self.console.print(f"{i}. [yellow]{combo}[/yellow] → [green]{result}[/green]")
+            self.console.print(
+                f"{i}. [yellow]{combo}[/yellow] → [green]{result}[/green]"
+            )
 
         try:
             choice = int(Prompt.ask("Which rule to edit?", default="1"))

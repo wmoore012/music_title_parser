@@ -7,6 +7,13 @@
 
 Advanced music title parsing with version detection and metadata extraction
 
+**Repo:** https://github.com/wmoore012/music-title-parser
+**What it does:** Splits messy release strings into artist, title, feature list, and version tags so analytics pipelines and dedupers receive clean, structured columns.
+
+## 🙋‍♂️ Why I Built It
+
+I'm Wilton Moore—a data science & music-ops hybrid building CatalogLAB so artists actually trust their dashboards. This parser powers my ETL’s normalization layer so CRM, experimentation, and analytics jobs see consistent artist/title/feature/version fields. Shipping it publicly shows how I approach messy music metadata with production-grade Python (type safety, tests, benchmarks) that employers can drop into their stacks.
+
 ## 🚀 Performance Highlights
 
 **Parses 50K titles in <3 seconds with 98% accuracy**
@@ -22,8 +29,12 @@ Advanced music title parsing with version detection and metadata extraction
 
 ## 📦 Installation
 
+Install directly from GitHub:
+
 ```bash
-pip install music-title-parser
+git clone https://github.com/wmoore012/music-title-parser.git
+cd music-title-parser
+pip install -e .
 ```
 
 ## 🔥 Quick Start
@@ -140,6 +151,12 @@ Built by Wilton Moore at Perday Labs for production use. This module demonstrate
 - **DevOps Excellence**: CI/CD, monitoring, and deployment automation
 - **Security Expertise**: Threat modeling and secure coding practices
 - **Quality Assurance**: Comprehensive testing and code review processes
+
+## 📬 Contact
+
+Questions or want to collaborate? Reach out anytime:
+- LinkedIn: https://www.linkedin.com/in/wiltonmoore/
+- GitHub: https://github.com/wmoore012
 
 ---
 

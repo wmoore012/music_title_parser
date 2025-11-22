@@ -1,25 +1,28 @@
-#!/usr/bin/env python3
-# SPDX-License-Identifier: MIT
-# Copyright (c) 2024 MusicScope
+#!/usr / bin / env python3
+# SPDX - License - Identifier: MIT
+# Copyright (c) 2025 Perday CatalogLAB™
 
 """
 Music Title Parser Module Database Setup
 
-Sets up module-specific tables and loads default mappings.
-Run this after installing the music-title-parser module.
+Sets up module - specific tables and loads default mappings.
+Run this after installing the music - title - parser module.
 
 Security: Uses parameterized queries only, following OWASP guidelines.
 """
 
+import logging
 import os
 import sys
 from pathlib import Path
 from typing import Optional
-import logging
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+)
 logger = logging.getLogger(__name__)
+
 
 def setup_tables(connection_string: Optional[str] = None):
     """Set up music title parser module tables with security validation."""
@@ -51,23 +54,26 @@ def setup_tables(connection_string: Optional[str] = None):
     try:
         # Validate connection string format
         if not connection_string or not connection_string.startswith("mysql://"):
-            logger.error("❌ Invalid connection string format. Expected: mysql://user:pass@host:port/db")
+            logger.error(
+                "❌ Invalid connection string format. Expected: mysql://user:pass@host:port / db"
+            )
             return False
 
         # Parse connection string securely
         try:
             from urllib.parse import urlparse
+
             parsed = urlparse(connection_string)
 
             connection_params = {
-                'host': parsed.hostname or 'localhost',
-                'port': parsed.port or 3306,
-                'user': parsed.username or 'root',
-                'password': parsed.password or '',
-                'database': parsed.path.lstrip('/') or 'icatalog_public',
-                'charset': 'utf8mb4',
-                'autocommit': False,  # Explicit transaction control
-                'connect_timeout': 10,  # Prevent hanging connections
+                "host": parsed.hostname or "localhost",
+                "port": parsed.port or 3306,
+                "user": parsed.username or "root",
+                "password": parsed.password or "",
+                "database": parsed.path.lstrip("/") or "icatalog_public",
+                "charset": "utf8mb4",
+                "autocommit": False,  # Explicit transaction control
+                "connect_timeout": 10,  # Prevent hanging connections
             }
         except Exception as parse_error:
             logger.error(f"❌ Failed to parse connection string: {parse_error}")
@@ -80,16 +86,18 @@ def setup_tables(connection_string: Optional[str] = None):
         # Execute SQL with transaction safety
         with connection.cursor() as cursor:
             # Split and validate each statement
-            statements = [s.strip() for s in sql_content.split(';') if s.strip()]
+            statements = [s.strip() for s in sql_content.split(";") if s.strip()]
 
             for i, statement in enumerate(statements):
                 if statement:
                     try:
                         # Log statement execution (without sensitive data)
-                        logger.info(f"Executing statement {i+1}/{len(statements)}")
+                        logger.info(f"Executing statement {i + 1}/{len(statements)}")
                         cursor.execute(statement)
                     except PyMySQLError as stmt_error:
-                        logger.error(f"❌ Failed to execute statement {i+1}: {stmt_error}")
+                        logger.error(
+                            f"❌ Failed to execute statement {i + 1}: {stmt_error}"
+                        )
                         connection.rollback()
                         return False
 
@@ -123,9 +131,9 @@ def load_default_mappings():
     print("- visualizer → lyric video")
     print("- lyric visualizer → lyric video")
     print("- visiualizer → lyric video (typo fix)")
-    print("- slowed+visualizer → slowed")
-    print("- acoustic+official video → acoustic")
-    print("- live+lyric video → live performance")
+    print("- slowed + visualizer → slowed")
+    print("- acoustic + official video → acoustic")
+    print("- live + lyric video → live performance")
 
 
 def load_default_policies():

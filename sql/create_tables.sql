@@ -1,5 +1,5 @@
 -- SPDX-License-Identifier: MIT
--- Copyright (c) 2024 MusicScope
+-- Copyright (c) 2025 Perday CatalogLAB™
 
 -- Music Title Parser Module Tables
 -- Module-specific tables for version mappings and policy management

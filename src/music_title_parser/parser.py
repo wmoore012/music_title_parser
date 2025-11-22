@@ -1,5 +1,5 @@
-# SPDX-License-Identifier: MIT
-# Copyright (c) 2024 MusicScope
+# SPDX - License - Identifier: MIT
+# Copyright (c) 2025 Perday CatalogLAB™
 
 """
 Advanced music title parsing with artist extraction, feature detection, and version identification.
@@ -19,20 +19,20 @@ __all__ = ["parse_title", "split_artist_title", "parse_with_policy"]
 # Kept behind a toggle so default behavior is unchanged.
 _YT_NOISE_RE = re.compile(
     r"""^(
-        official(\s+music)?\s*video|
-        official\s*audio|
-        hq\s*audio|
-        lyric(s)?(\s*video)?|
+        official(\s + music)?\s * video|
+        official\s * audio|
+        hq\s * audio|
+        lyric(s)?(\s * video)?|
         visuali[zs]er|
-        audio\s*only|
-        full\s*album|
+        audio\s * only|
+        full\s * album|
         hd|4k|8k
     )$""",
     re.IGNORECASE | re.VERBOSE,
 )
 
 
-# Normalize popular creator-format "versions" to the canonical form we want in DB
+# Normalize popular creator - format "versions" to the canonical form we want in DB
 def _normalize_version_phrase(s: str) -> str:
     """Map common creator variants to canonical version strings."""
     raw = re.sub(r"\s{2,}", " ", s).strip()
@@ -53,13 +53,15 @@ def _normalize_version_phrase(s: str) -> str:
         r"\bclean\b": "Clean",
         r"\bexplicit\b": "Explicit",
         r"\binstrumental\b": "Instrumental",
-        r"\bradio\s*edit\b": "Radio Edit",
-        r"\bclub\s*mix\b": "Club Mix",
+        r"\bradio\s * edit\b": "Radio Edit",
+        r"\bclub\s * mix\b": "Club Mix",
         r"\bvip\b": "VIP",
         r"\bremaster(?:ed)?\b": "Remastered",
         r"\bremix\b": "Remix",
         r"\bacoustic\b": "Acoustic",
-        r"\blive(?:\s*version)?\b": "Live" if raw.lower() == "live" else "Live Version",
+        r"\blive\s*version\b": "Live Version",
+        r"\blive\s*performance\b": "Live Performance",
+        r"\blive\b": "Live",
         r"\bversion\b": "Version",
         r"\brework\b": "Rework",
         r"\bbootleg\b": "Bootleg",
@@ -69,9 +71,12 @@ def _normalize_version_phrase(s: str) -> str:
         if re.search(pat, raw, re.IGNORECASE):
             return out
 
-    # Gentle smart-cap fallback (don't wreck acronyms)
+    # Gentle smart - cap fallback (don't wreck acronyms)
     return " ".join(
-        [w if (len(w) > 1 and w.isupper()) else (w[:1].upper() + w[1:]) for w in raw.split()]
+        [
+            w if (len(w) > 1 and w.isupper()) else (w[:1].upper() + w[1:])
+            for w in raw.split()
+        ]
     )
 
 
@@ -123,13 +128,13 @@ def _split_guests(guests: str) -> list[str]:
 
 
 def _is_version_content(content: str) -> bool:
-    """Heuristic: looks like a version tag (Live, Acoustic, Remix, Slowed/Reverb, etc.)."""
+    """Heuristic: looks like a version tag (Live, Acoustic, Remix, Slowed / Reverb, etc.)."""
     if _FEATURE_PREFIX.match(content):
         return False
     seg = content.strip()
     # Treat 'slowed x reverb' (and +, &, 'and', or just whitespace) as a version in any order.
     if re.search(
-        r"slowed\s*(?:[+x&]|and)?\s*reverb(?:ed)?|reverb(?:ed)?\s*(?:[+x&]|and)?\s*slowed",
+        r"slowed\s*(?:[+x&]|and)?\s * reverb(?:ed)?|reverb(?:ed)?\s*(?:[+x&]|and)?\s * slowed",
         seg,
         re.IGNORECASE,
     ):
@@ -146,7 +151,7 @@ def _is_version_content(content: str) -> bool:
 def _get_default_version_mapping_table() -> dict[str, str]:
     """
     Simple lookup table for version combinations.
-    Key: sorted combination of versions (e.g., "acoustic+official video")
+    Key: sorted combination of versions (e.g., "acoustic + official video")
     Value: the result version to use
 
     This is much simpler than complex priority rules!
@@ -161,37 +166,36 @@ def _get_default_version_mapping_table() -> dict[str, str]:
         "slowed + reverb": "slowed and reverbed",
         "slowed & reverb": "slowed and reverbed",
         "slowed reverb": "slowed and reverbed",
-        "live performance": "live",
-        "live version": "live",
+        "live version": "live performance",
         "acoustic version": "acoustic",
-        # Two-version combinations - musical versions win over presentation
-        "acoustic+lyric video": "acoustic",
-        "acoustic+official video": "acoustic",
-        "acoustic+visualizer": "acoustic",
-        "live+lyric video": "live",
-        "live+official video": "live",
-        "live+visualizer": "live",
-        "remix+lyric video": "remix",
-        "remix+official video": "remix",
-        "remix+visualizer": "remix",
-        "slowed+lyric video": "slowed",
-        "slowed+official video": "slowed",
-        "slowed+visualizer": "slowed",
-        "instrumental+lyric video": "instrumental",
-        "instrumental+official video": "instrumental",
-        "instrumental+visualizer": "instrumental",
+        # Two - version combinations - musical versions win over presentation
+        "acoustic + lyric video": "acoustic",
+        "acoustic + official video": "acoustic",
+        "acoustic + visualizer": "acoustic",
+        "live + lyric video": "live",
+        "live + official video": "live",
+        "live + visualizer": "live",
+        "remix + lyric video": "remix",
+        "remix + official video": "remix",
+        "remix + visualizer": "remix",
+        "slowed + lyric video": "slowed",
+        "slowed + official video": "slowed",
+        "slowed + visualizer": "slowed",
+        "instrumental + lyric video": "instrumental",
+        "instrumental + official video": "instrumental",
+        "instrumental + visualizer": "instrumental",
         # Presentation format combinations - pick the better one
-        "lyric video+official video": "lyric video",  # Lyric video > official video
-        "lyric video+visualizer": "lyric video",
-        "official video+visualizer": "official video",
-        # Special cases you mentioned
-        "slowed+visualizer": "slowed",  # Your specific example
+        "lyric video + official video": "lyric video",  # Lyric video > official video
+        "lyric video + visualizer": "lyric video",
+        "official video + visualizer": "official video",  # Your specific example
         # Three or more versions - just take the first musical one
         # (These are rare, but the logic will handle them)
     }
 
 
-def _get_version_priority(version_text: str, rules: dict[str, Any] | None = None) -> int:
+def _get_version_priority(
+    version_text: str, rules: dict[str, Any] | None = None
+) -> int:
     """
     Get priority score for version types using configurable rules.
     Lower numbers = higher priority.
@@ -208,7 +212,7 @@ def _get_version_priority(version_text: str, rules: dict[str, Any] | None = None
             return priority
 
     # Fallback to pattern matching for complex cases
-    if re.search(r"slowed\s*(?:[+x&]|and)?\s*reverb", version_lower):
+    if re.search(r"slowed\s*(?:[+x&]|and)?\s * reverb", version_lower):
         return priorities.get("slowed and reverbed", 1)
 
     # Default priority for unknown versions
@@ -256,26 +260,62 @@ def _resolve_version_combination(
 def _strip_paren_segments(full_title: str) -> tuple[str, list[str]]:
     """
     Return (base_without_segments, [segments…]) scanning (), [], {} left→right.
-    Use alternation instead of a brittle character class for closers.
+    Handles nested parentheses by finding balanced pairs.
     """
     segments: list[str] = []
     keep: list[str] = []
-    last = 0
-    pat = re.compile(r"\(([^()]*)\)|\[([^\[\]]*)\]|\{([^\{\}]*)\}")
-    for m in pat.finditer(
-        full_title
-    ):  # official docs show finditer() yields non-overlapping matches
-        seg = next(g for g in m.groups() if g is not None)
-        segments.append(seg.strip())
-        keep.append(full_title[last : m.start()].strip())
-        last = m.end()
-    keep.append(full_title[last:].strip())
+    i = 0
+
+    while i < len(full_title):
+        # Find opening bracket
+        start_pos = None
+        bracket_type = None
+
+        for pos in range(i, len(full_title)):
+            if full_title[pos] in "([{":
+                start_pos = pos
+                bracket_type = full_title[pos]
+                break
+
+        if start_pos is None:
+            # No more brackets, add rest of string
+            keep.append(full_title[i:].strip())
+            break
+
+        # Add text before bracket
+        keep.append(full_title[i:start_pos].strip())
+
+        # Find matching closing bracket
+        close_map = {"(": ")", "[": "]", "{": "}"}
+        target_close = close_map[bracket_type]
+        depth = 0
+        end_pos = None
+
+        for pos in range(start_pos, len(full_title)):
+            if full_title[pos] == bracket_type:
+                depth += 1
+            elif full_title[pos] == target_close:
+                depth -= 1
+                if depth == 0:
+                    end_pos = pos
+                    break
+
+        if end_pos is not None:
+            # Extract content between brackets (excluding the brackets themselves)
+            content = full_title[start_pos + 1 : end_pos].strip()
+            segments.append(content)
+            i = end_pos + 1
+        else:
+            # Unmatched bracket, treat as regular text
+            keep.append(full_title[start_pos:].strip())
+            break
+
     base = re.sub(r"\s{2,}", " ", " ".join(k for k in keep if k)).strip()
     return base, segments
 
 
 def _smart_cap(s: str) -> str:
-    # Title-case-ish, but leave acronyms
+    # Title - case - ish, but leave acronyms
     words = s.split()
     out: list[str] = []
     for w in words:
@@ -289,7 +329,7 @@ def split_artist_title(full: str) -> tuple[list[str], str]:
 
     - Splits on ASCII hyphen, en dash, or em dash surrounded by spaces.
     - Left side is split on common collaboration separators: ',', '&', 'and', 'x', '×', '+' (but not '/').
-    - Returns artists in order (deduped, case-insensitive) and the right-side string unchanged
+    - Returns artists in order (deduped, case - insensitive) and the right - side string unchanged
       so downstream parsers can process features / versions in parentheses.
     If no dash is present, returns ([], full).
 
@@ -317,7 +357,7 @@ def split_artist_title(full: str) -> tuple[list[str], str]:
 
     left, right = parts[0].strip(), parts[1].strip()
 
-    # Split left into primary artists; include '/' but be careful with names like 'AC/DC'
+    # Split left into primary artists; include '/' but be careful with names like 'AC / DC'
     # Use word boundaries to avoid splitting names that contain these characters
     raw_artists = re.split(r"\s*(?:,|&|and|x|×|\+|/)\s*", left, flags=re.IGNORECASE)
 
@@ -356,9 +396,9 @@ def parse_title(
     Args:
         title: Title string to parse
         normalize_youtube_noise: If True, filter out YouTube presentation labels
-        version_mapping_table: Optional dict for custom version handling. Simple key-value pairs:
+        version_mapping_table: Optional dict for custom version handling. Simple key - value pairs:
             - Single versions: "visualizer": "lyric video" (normalize names)
-            - Combinations: "slowed+visualizer": "slowed" (sorted keys)
+            - Combinations: "slowed + visualizer": "slowed" (sorted keys)
 
     Returns:
         Dictionary with parsed components:
@@ -382,7 +422,7 @@ def parse_title(
         >>> # Custom table example - much simpler!
         >>> table = {
         ...     "visualizer": "lyric video",           # Single version mapping
-        ...     "slowed+visualizer": "slowed"          # Combination mapping
+        ...     "slowed + visualizer": "slowed"          # Combination mapping
         ... }
         >>> parse_title("Song (Slowed) (Visualizer)", version_mapping_table=table)
         {
@@ -393,19 +433,21 @@ def parse_title(
         }
     """
     if not isinstance(title, str) or not title.strip():
-        raise ValueError("title must be a non-empty string")
+        raise ValueError("title must be a non - empty string")
 
     base, segments = _strip_paren_segments(title)
 
     # Strip trailing producer attributions from the base string when normalizing
     # e.g., "... Produced by IVN" → remove
     if normalize_youtube_noise:
-        base = re.sub(r"\s*produced\s+by\s+.+$", "", base, flags=re.IGNORECASE).strip()
+        base = re.sub(
+            r"\s * produced\s + by\s+.+$", "", base, flags=re.IGNORECASE
+        ).strip()
 
     features: list[str] = []
     version: str | None = None
 
-    # Handle " - feat. X" and " feat. X" outside parentheses/brackets.
+    # Handle " - feat. X" and " feat. X" outside parentheses / brackets.
     # Look for features after dash or just standalone
     feature_patterns = [
         r"[-–—]\s*(?:feat\.?|featuring|ft\.?|with)\s+(?P<guests>.+)$",  # After dash
@@ -419,7 +461,7 @@ def parse_title(
             base = base[: dash.start()].strip()
             break  # Only match first pattern
 
-    # Walk paren/bracket contents in order: collect features and find version tags.
+    # Walk paren / bracket contents in order: collect features and find version tags.
     version_candidates = []
 
     for content in segments:
@@ -429,7 +471,7 @@ def parse_title(
 
         # Drop producer attribution segments entirely when normalizing
         if normalize_youtube_noise and re.match(
-            r"^produced\s+by\s+.+$", content.strip(), flags=re.IGNORECASE
+            r"^produced\s + by\s+.+$", content.strip(), flags=re.IGNORECASE
         ):
             continue
 
@@ -445,12 +487,14 @@ def parse_title(
 
     # Resolve multiple versions using simple table lookup
     if version_candidates:
-        version = _resolve_version_combination(version_candidates, version_mapping_table)
+        version = _resolve_version_combination(
+            version_candidates, version_mapping_table
+        )
 
     if version is None:
         version = "Original"
 
-    # Heuristic: if title text contains lyric/visualizer tokens, treat as Lyric Video
+    # Heuristic: if title text contains lyric / visualizer tokens, treat as Lyric Video
     # even if the specific token was removed as noise for canonicalization.
     if normalize_youtube_noise and version == "Original":
         if re.search(r"\blyric(s)?\b", title, flags=re.IGNORECASE) or re.search(
@@ -470,7 +514,7 @@ def normalize_channel_title_for_artist(channel_title: str) -> str:
     """
     Normalize YouTube channel titles when used as artist fallbacks.
 
-    - Strip trailing " - Topic" which appears on auto-generated topic channels.
+    - Strip trailing " - Topic" which appears on auto - generated topic channels.
     - Trim whitespace.
 
     Args:
@@ -486,11 +530,11 @@ def normalize_channel_title_for_artist(channel_title: str) -> str:
     if not isinstance(channel_title, str):
         return ""
     out = channel_title.strip()
-    out = re.sub(r"\s*-\s*Topic$", "", out, flags=re.IGNORECASE).strip()
+    out = re.sub(r"\s*-\s * Topic$", "", out, flags=re.IGNORECASE).strip()
     return out
 
 
-# Import policy-aware parsing
+# Import policy - aware parsing
 try:
     from .models import ParsedTitle
     from .policy_engine import parse_with_policy

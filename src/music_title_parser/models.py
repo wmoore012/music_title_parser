@@ -1,10 +1,10 @@
-# SPDX-License-Identifier: MIT
-# Copyright (c) 2024 MusicScope
+# SPDX - License - Identifier: MIT
+# Copyright (c) 2025 Perday CatalogLAB™
 
 """
 Typed models for music title parsing.
 
-This module provides Pydantic models for type-safe parsing results and configuration.
+This module provides Pydantic models for type - safe parsing results and configuration.
 """
 
 from __future__ import annotations
@@ -56,7 +56,7 @@ class ParsedTitle(BaseModel):
     )
     title: str = Field(
         description="Clean song title",
-        examples=["Anti-Hero", "God's Plan", "Song Title"],
+        examples=["Anti - Hero", "God's Plan", "Song Title"],
     )
     features: list[str] = Field(
         default_factory=list,
@@ -79,7 +79,7 @@ class ParsedTitle(BaseModel):
         examples=["accept", "graylist", "reject"],
     )
     reason: str = Field(
-        description="Human-readable explanation for the decision",
+        description="Human - readable explanation for the decision",
         examples=[
             "YouTube OAC; OAC boost (+0.15)",
             "GARBAGE DETECTED",
@@ -143,7 +143,9 @@ class AllowlistEntry(BaseModel):
 
     pattern_or_mapping: dict[str, str] = Field(
         description="Channel to artist mapping or pattern",
-        examples=[{"channel_name": "Taylor Swift - Topic", "artist_name": "Taylor Swift"}],
+        examples=[
+            {"channel_name": "Taylor Swift - Topic", "artist_name": "Taylor Swift"}
+        ],
     )
     type: str = Field(
         description="Type of allowlist entry",
@@ -161,11 +163,11 @@ class AllowlistEntry(BaseModel):
     )
     created_at: str = Field(
         description="When this entry was created (ISO format)",
-        examples=["2025-09-23"],
+        examples=["2025 - 09 - 23"],
     )
     expires_at: str = Field(
         description="When this entry expires (ISO format)",
-        examples=["2025-12-22"],
+        examples=["2025 - 12 - 22"],
     )
     notes: str = Field(
         default="",
@@ -183,7 +185,7 @@ class DenylistEntry(BaseModel):
         description="Pattern to match or exact string to block",
         examples=[
             {
-                "regex": "[0-9]+(rd|th|st|nd)\\s+I\\s+Cam",
+                "regex": "[0 - 9]+(rd|th|st|nd)\\s + I\\s + Cam",
                 "description": "Patterns like '3rd I Cam'",
             },
             {"exact_match": "word 4 word🎼"},
@@ -204,11 +206,11 @@ class DenylistEntry(BaseModel):
     )
     created_at: str = Field(
         description="When this entry was created (ISO format)",
-        examples=["2025-09-23"],
+        examples=["2025 - 09 - 23"],
     )
     expires_at: str = Field(
         description="When this entry expires (ISO format)",
-        examples=["2025-12-22"],
+        examples=["2025 - 12 - 22"],
     )
     notes: str = Field(
         default="",
@@ -228,10 +230,10 @@ class ParserPolicy(BaseModel):
     )
     policy_version: str = Field(
         description="Version of this policy",
-        examples=["2025-09-23", "1.0.0"],
+        examples=["2025 - 09 - 23", "1.0.0"],
     )
     one_line_policy: str = Field(
-        description="One-line summary of the policy approach",
+        description="One - line summary of the policy approach",
     )
     profiles: dict[PolicyProfile, PolicyConfig] = Field(
         description="Available policy profiles",
@@ -268,7 +270,9 @@ class ValidationResult(BaseModel):
     model_config = ConfigDict(validate_assignment=True)
 
     is_valid: bool = Field(description="Whether validation passed")
-    errors: list[str] = Field(default_factory=list, description="Validation errors found")
+    errors: list[str] = Field(
+        default_factory=list, description="Validation errors found"
+    )
     warnings: list[str] = Field(default_factory=list, description="Validation warnings")
     summary: dict[str, str | int | float] = Field(
         default_factory=dict,

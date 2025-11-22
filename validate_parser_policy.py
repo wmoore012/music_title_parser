@@ -1,6 +1,6 @@
-#!/usr/bin/env python3
-# SPDX-License-Identifier: MIT
-# Copyright (c) 2024 MusicScope
+#!/usr / bin / env python3
+# SPDX - License - Identifier: MIT
+# Copyright (c) 2025 Perday CatalogLAB™
 
 """
 Validate Parser Policy Configuration
@@ -102,7 +102,7 @@ def validate_policy_files():
     if metrics.get("garbage_rate_max", 1) > 0.01:
         issues.append("⚠️  Garbage rate target > 1% - consider lowering for production")
 
-    # Validate allowlist/denylist files
+    # Validate allowlist / denylist files
     try:
         with open(allowlist_path) as f:
             allowlist = json.load(f)
@@ -113,7 +113,12 @@ def validate_policy_files():
             issues.append("❌ Allowlist missing 'entries' field")
         else:
             for i, entry in enumerate(allowlist["entries"]):
-                required_fields = ["pattern_or_mapping", "owner", "created_at", "expires_at"]
+                required_fields = [
+                    "pattern_or_mapping",
+                    "owner",
+                    "created_at",
+                    "expires_at",
+                ]
                 for field in required_fields:
                     if field not in entry:
                         issues.append(f"❌ Allowlist entry {i} missing field: {field}")
@@ -131,7 +136,12 @@ def validate_policy_files():
             issues.append("❌ Denylist missing 'entries' field")
         else:
             for i, entry in enumerate(denylist["entries"]):
-                required_fields = ["pattern_or_mapping", "owner", "created_at", "expires_at"]
+                required_fields = [
+                    "pattern_or_mapping",
+                    "owner",
+                    "created_at",
+                    "expires_at",
+                ]
                 for field in required_fields:
                     if field not in entry:
                         issues.append(f"❌ Denylist entry {i} missing field: {field}")
@@ -158,8 +168,12 @@ def validate_policy_files():
         print(f"  Version: {yaml_config['policy_version']}")
         print(f"  Profiles: {', '.join(yaml_config['profiles'].keys())}")
         print(f"  Storage: {' → '.join(yaml_config['storage']['layers'])}")
-        print(f"  P@1 Target: {yaml_config['metrics_targets']['p_at_1_primary_artist_min']*100}%")
-        print(f"  Garbage Target: <{yaml_config['metrics_targets']['garbage_rate_max']*100}%")
+        print(
+            f"  P@1 Target: {yaml_config['metrics_targets']['p_at_1_primary_artist_min']*100}%"
+        )
+        print(
+            f"  Garbage Target: <{yaml_config['metrics_targets']['garbage_rate_max']*100}%"
+        )
 
         return True
 

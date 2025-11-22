@@ -1,11 +1,11 @@
-# SPDX-License-Identifier: MIT
-# Copyright (c) 2024 MusicScope
+# SPDX - License - Identifier: MIT
+# Copyright (c) 2025 Perday CatalogLAB™
 
 """
 Simple Version Mapping Table Examples
 
-This shows the much simpler table-based approach for handling version combinations.
-No complex rules - just straightforward key-value mappings!
+This shows the much simpler table - based approach for handling version combinations.
+No complex rules - just straightforward key - value mappings!
 """
 
 from music_title_parser.parser import parse_title, split_artist_title
@@ -16,7 +16,7 @@ def show_default_table():
     print("🎵 Default Version Mapping Table")
     print("=" * 40)
 
-    # These are handled by the built-in table
+    # These are handled by the built - in table
     test_cases = [
         "Song (Visualizer)",  # → Lyric Video
         "Song (Lyric Visualizer)",  # → Lyric Video
@@ -43,12 +43,12 @@ def show_custom_table():
         "visiualizer": "lyric video",  # Handle typos
         "official mv": "official video",  # Handle abbreviations
         # Combination mappings (key = sorted versions joined with +)
-        "slowed+visualizer": "slowed",  # Your specific case
-        "acoustic+official video": "acoustic",  # Musical wins over presentation
-        "remix+lyric video": "remix",  # Musical wins over presentation
+        "slowed + visualizer": "slowed",  # Your specific case
+        "acoustic + official video": "acoustic",  # Musical wins over presentation
+        "remix + lyric video": "remix",  # Musical wins over presentation
         # Special combinations you want to handle differently
-        "live+lyric video": "live performance",  # Custom result
-        "acoustic+live": "acoustic live",  # Custom combination
+        "live + lyric video": "live performance",  # Custom result
+        "acoustic + live": "acoustic live",  # Custom combination
     }
 
     test_cases = [
@@ -74,8 +74,8 @@ def show_real_youtube_examples():
         "visualizer": "lyric video",
         "lyric visualizer": "lyric video",
         "visiualizer": "lyric video",  # Handle the typo in your data
-        "slowed+visualizer": "slowed",
-        "slowed+visiualizer": "slowed",  # Handle typo in combination too
+        "slowed + visualizer": "slowed",
+        "slowed + visiualizer": "slowed",  # Handle typo in combination too
     }
 
     # Real titles from your database
@@ -102,7 +102,7 @@ def show_how_to_add_new_cases():
     print("When you encounter a new combination like 'Nightcore + Visualizer':")
     print()
     print("1. Just add it to your table:")
-    print("   my_table['nightcore+visualizer'] = 'nightcore'")
+    print("   my_table['nightcore + visualizer'] = 'nightcore'")
     print()
     print("2. Or for single version normalization:")
     print("   my_table['visualiser'] = 'lyric video'  # British spelling")
