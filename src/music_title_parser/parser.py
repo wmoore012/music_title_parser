@@ -77,7 +77,10 @@ def _normalize_version_phrase(s: str) -> str:
 
     # Gentle smart - cap fallback (don't wreck acronyms)
     return " ".join(
-        [w if (len(w) > 1 and w.isupper()) else (w[:1].upper() + w[1:]) for w in raw.split()]
+        [
+            w if (len(w) > 1 and w.isupper()) else (w[:1].upper() + w[1:])
+            for w in raw.split()
+        ]
     )
 
 
@@ -198,7 +201,39 @@ def _get_default_version_mapping_table() -> dict[str, str]:
     }
 
 
-def _get_version_priority(version_text: str, rules: dict[str, Any] | None = None) -> int:
+def _get_default_version_mapping_rules() -> dict[str, Any]:
+    """Default priority rules for version phrases.
+
+    The structure is intentionally simple so that it can later be overridden
+    by a JSON rules file managed by ``VersionRuleManager``.
+
+    Lower numbers mean "keep this version" when multiple tags are present.
+    """
+
+    return {
+        "priorities": {
+            # Musical / sonic transforms – keep these over presentation labels
+            "slowed and reverbed": 1,
+            "slowed": 2,
+            "remix": 2,
+            "nightcore": 2,
+            "acoustic": 3,
+            "live performance": 3,
+            "live version": 3,
+            "live": 3,
+            "instrumental": 4,
+            # Presentation formats sit lower in the stack
+            "official video": 5,
+            "music video": 5,
+            "lyric video": 5,
+            "visualizer": 6,
+        }
+    }
+
+
+def _get_version_priority(
+    version_text: str, rules: dict[str, Any] | None = None
+) -> int:
     """
     Get priority score for version types using configurable rules.
     Lower numbers = higher priority.
@@ -447,7 +482,9 @@ def parse_title(
     # Strip trailing producer attributions from the base string when normalizing
     # e.g., "... Produced by IVN" → remove
     if normalize_youtube_noise:
-        base = re.sub(r"\s * produced\s + by\s+.+$", "", base, flags=re.IGNORECASE).strip()
+        base = re.sub(
+            r"\s * produced\s + by\s+.+$", "", base, flags=re.IGNORECASE
+        ).strip()
 
     features: list[str] = []
     version: str | None = None
@@ -492,7 +529,9 @@ def parse_title(
 
     # Resolve multiple versions using simple table lookup
     if version_candidates:
-        version = _resolve_version_combination(version_candidates, version_mapping_table)
+        version = _resolve_version_combination(
+            version_candidates, version_mapping_table
+        )
 
     if version is None:
         version = "Original"

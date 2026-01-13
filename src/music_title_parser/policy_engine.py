@@ -11,8 +11,14 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from .exceptions import ConfigLoadError, InvalidPatternError, PolicyError, ValidationError
+from .exceptions import (
+    ConfigLoadError,
+    InvalidPatternError,
+    PolicyError,
+    ValidationError,
+)
 from .models import (
+    DEFAULT_POLICY_PROFILE,
     AllowlistEntry,
     Decision,
     DenylistEntry,
@@ -20,7 +26,6 @@ from .models import (
     ParserPolicy,
     ParsingMethod,
     PolicyProfile,
-    DEFAULT_POLICY_PROFILE,
 )
 from .parser import (
     normalize_channel_title_for_artist,
@@ -51,7 +56,9 @@ class PolicyEngine:
 
     def __init__(self, config_dir: str | Path | None = None) -> None:
         self.config_dir = (
-            Path(config_dir) if config_dir else Path(__file__).resolve().parent / "config"
+            Path(config_dir)
+            if config_dir
+            else Path(__file__).resolve().parent / "config"
         )
         if not self.config_dir.exists():
             raise ConfigLoadError(str(self.config_dir), "config directory not found")
@@ -108,7 +115,8 @@ class PolicyEngine:
 
         raw_channel = channel_title.strip()
         allow_hit = self._match_allowlist(raw_channel) or (
-            normalized_channel != raw_channel and self._match_allowlist(normalized_channel)
+            normalized_channel != raw_channel
+            and self._match_allowlist(normalized_channel)
         )
         channel_boost = 0.0
         if allow_hit:
@@ -192,7 +200,9 @@ class PolicyEngine:
     def _load_denylist(
         self, path: Path
     ) -> tuple[
-        list[DenylistEntry], dict[str, DenylistEntry], list[tuple[re.Pattern[str], DenylistEntry]]
+        list[DenylistEntry],
+        dict[str, DenylistEntry],
+        list[tuple[re.Pattern[str], DenylistEntry]],
     ]:
         data = self._load_json(path)
         entries = [DenylistEntry(**raw) for raw in data.get("entries", [])]

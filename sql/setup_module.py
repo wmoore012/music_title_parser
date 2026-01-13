@@ -18,7 +18,9 @@ from pathlib import Path
 from typing import Optional
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+)
 logger = logging.getLogger(__name__)
 
 
@@ -93,7 +95,9 @@ def setup_tables(connection_string: Optional[str] = None):
                         logger.info(f"Executing statement {i + 1}/{len(statements)}")
                         cursor.execute(statement)
                     except PyMySQLError as stmt_error:
-                        logger.error(f"❌ Failed to execute statement {i + 1}: {stmt_error}")
+                        logger.error(
+                            f"❌ Failed to execute statement {i + 1}: {stmt_error}"
+                        )
                         connection.rollback()
                         return False
 

@@ -5,7 +5,6 @@
 from __future__ import annotations
 
 import pytest
-
 from music_title_parser.exceptions import ValidationError
 from music_title_parser.policy_engine import PolicyEngine, parse_with_policy
 

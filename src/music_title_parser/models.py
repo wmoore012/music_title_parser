@@ -143,7 +143,9 @@ class AllowlistEntry(BaseModel):
 
     pattern_or_mapping: dict[str, str] = Field(
         description="Channel to artist mapping or pattern",
-        examples=[{"channel_name": "Taylor Swift - Topic", "artist_name": "Taylor Swift"}],
+        examples=[
+            {"channel_name": "Taylor Swift - Topic", "artist_name": "Taylor Swift"}
+        ],
     )
     type: str = Field(
         description="Type of allowlist entry",
@@ -268,7 +270,9 @@ class ValidationResult(BaseModel):
     model_config = ConfigDict(validate_assignment=True)
 
     is_valid: bool = Field(description="Whether validation passed")
-    errors: list[str] = Field(default_factory=list, description="Validation errors found")
+    errors: list[str] = Field(
+        default_factory=list, description="Validation errors found"
+    )
     warnings: list[str] = Field(default_factory=list, description="Validation warnings")
     summary: dict[str, str | int | float] = Field(
         default_factory=dict,

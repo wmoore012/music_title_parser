@@ -93,7 +93,9 @@ def _benchmark_command() -> None:
 
         print("🚀 Running benchmark...")
         result = run_basic_benchmark()
-        print(f"✅ Processed {result.rows_processed} titles in {result.time_seconds:.3f}s")
+        print(
+            f"✅ Processed {result.rows_processed} titles in {result.time_seconds:.3f}s"
+        )
         print(f"📊 Rate: {result.rows_per_second:,} titles / second")
         print(f"💾 Memory: {result.memory_mb:.1f} MB")
     except ImportError:
@@ -109,7 +111,11 @@ def _validate_policy_files() -> bool:
     try:
         engine = PolicyEngine()
 
-        required_profiles: tuple[PolicyProfile, ...] = ("strict", "balanced", "aggressive")
+        required_profiles: tuple[PolicyProfile, ...] = (
+            "strict",
+            "balanced",
+            "aggressive",
+        )
         for profile_name in required_profiles:
             engine.policy.get_profile(profile_name)
 

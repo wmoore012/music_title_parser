@@ -5,7 +5,6 @@
 from __future__ import annotations
 
 import pytest
-
 from music_title_parser.parser import (
     normalize_channel_title_for_artist,
     parse_title,
@@ -18,7 +17,12 @@ from music_title_parser.parser import (
     [
         (
             "My Awesome Song",
-            {"artist": "", "title": "My Awesome Song", "features": [], "version": "Original"},
+            {
+                "artist": "",
+                "title": "My Awesome Song",
+                "features": [],
+                "version": "Original",
+            },
         ),
         (
             "Song Title (feat. Artist A & Artist B)",
@@ -31,7 +35,12 @@ from music_title_parser.parser import (
         ),
         (
             "Track Name (Live Version)",
-            {"artist": "", "title": "Track Name", "features": [], "version": "Live Version"},
+            {
+                "artist": "",
+                "title": "Track Name",
+                "features": [],
+                "version": "Live Version",
+            },
         ),
     ],
 )

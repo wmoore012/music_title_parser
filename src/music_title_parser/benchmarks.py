@@ -18,7 +18,9 @@ if TYPE_CHECKING:
     from .models import PolicyProfile
 
 
-_SAMPLE_DATA_PATH = Path(__file__).resolve().parent / "config" / "benchmark_sample.jsonl"
+_SAMPLE_DATA_PATH = (
+    Path(__file__).resolve().parent / "config" / "benchmark_sample.jsonl"
+)
 _OUTPUT_PATH = Path(__file__).resolve().parent / "benchmark_results.json"
 
 
@@ -87,7 +89,9 @@ def run_comprehensive_benchmark() -> list[BenchmarkResult]:
     return results
 
 
-def _benchmark_profile(profile: PolicyProfile, num_titles: int = 100) -> BenchmarkResult:
+def _benchmark_profile(
+    profile: PolicyProfile, num_titles: int = 100
+) -> BenchmarkResult:
     """Benchmark a specific policy profile."""
     records = _load_benchmark_records(num_titles)
 
