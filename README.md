@@ -5,6 +5,8 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/wmoore012/music_title_parser/blob/main/LICENSE)
 
 > **Built for [Perday CatalogLAB](https://perdaycatalog.com)** - a data story platform for music producers and songwriters.
+>
+> [![CatalogLAB Data Story](docs/data_story.png)](https://perdaycatalog.com)
 
 Advanced music title parsing with version detection for remix, live, and remaster variants.
 
