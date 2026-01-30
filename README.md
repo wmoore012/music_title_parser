@@ -8,7 +8,7 @@
 >
 > [![CatalogLAB Data Story](docs/data_story.png)](https://perdaycatalog.com)
 
-Advanced music title parsing with version detection for remix, live, and remaster variants.
+Advanced music title parsing with version detection for remix, live, and remaster variants. (Tuned for YouTube)
 
 **Repo:** https://github.com/wmoore012/music_title_parser
 **What it does:** Extracts the clean title, version info, and featured artists from messy song titles so CatalogLAB can group songs intelligently.
