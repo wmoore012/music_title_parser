@@ -15,7 +15,7 @@ Advanced music title parsing with version detection for remix, live, and remaste
 
 ## Why I Built It
 
-Song titles from streaming platforms are a mess:
+Song titles from streaming platforms are a mess (Tuned for YouTube):
 
 - `"Dreams (feat. Snoop Dogg) [Remix]"`
 - `"Dreams - Radio Edit"`
